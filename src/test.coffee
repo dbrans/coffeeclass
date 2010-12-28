@@ -7,7 +7,6 @@ oklog = ->
   for expected in arguments
     actual = logs.shift()
     ok expected is actual
-    console.log 'oklog ', expected, ' actual: ', actual
 
 # Test init
 # Test before and after
