@@ -1,0 +1,36 @@
+# DSL for creating and extending classes and mixins
+
+# Create a class
+# Initialize properties on a per-instance basis using functions
+# Here, every instance of A will have its own queue.
+class A extends Class
+  @initialize
+    queue: Array
+
+a1 = new A
+a1.queue.push 'foo'
+(new A).queue # empty
+
+# Use @introduce when you intend to declare new keys
+# Here, an exception is thrown since 'queue' was introduced in A
+class B extends A
+  @introduce
+    queue: ->
+    bar: ->
+
+# Define a mixin
+QueueMixin = ->
+  @initialize
+    queue: Array
+  @introduce push: (x) -> @queue.push x
+
+# Extend a mixin
+StackMixin = ->
+  @do QueueMixin
+  @introduce pop: -> @queue.pop()
+
+OtherMixin = ->
+
+class MyStack extends Class
+  @do StackMixin, OtherMixin #Apply mixins
+  # Do other stuff
