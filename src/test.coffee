@@ -113,7 +113,8 @@ document.getElementById('console').innerHTML = "#{successCount} tests completed 
 # Here, every instance of A will have its own queue.
 class A extends Class
   @initialize
-    queue: Array
+    queue: Array # or -> []
+    map: Object # or -> {}
 
 a1 = new A
 a1.queue.push 'foo'
@@ -125,6 +126,19 @@ class B extends A
   @introduce
     queue: ->
     bar: ->
+
+# init method is called immediately after object construction with the arguments
+# that were passed to the constructor:
+class C extends B
+  init: (arg) ->
+
+
+# Use @before and @after to do most of your method 'overriding'.
+# The super (or whatever was at that key) is called for you, whether it exists or not.
+class D extends C
+  @after init: (arg) ->
+
+
 
 # Define a mixin
 QueueMixin = ->
@@ -143,5 +157,38 @@ class MyStack extends Class
   @do StackMixin, OtherMixin #Apply mixins
   # Do other stuff
 
+# Other nice stuff:
 
 
+# Properties
+class Point extends Class
+  @property
+    x:
+      get: -> @_x ?= 0
+      set: (@_x) ->
+    y:
+      get: -> @_y ?= 0
+      set: (@_y) ->
+
+p = new Point
+p.x() # -1
+p.x 3
+p.x() # 3
+
+
+# Delegation
+class Rect extends Class
+  @initialize
+    topleft: -> new Point
+    dim: -> new Point
+  @delegate x: 'topleft', y: 'topleft'
+  @delegate width: 'dim.x', height: 'dim.y'
+
+# Object.do
+# Descendents of Class implement 'do', a safe form of 'with'
+r = new Rect
+r.do ->
+  @x 3
+  @width 15
+  @dim.do ->
+    @y 15
