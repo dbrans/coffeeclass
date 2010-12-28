@@ -9,7 +9,9 @@ exports =
 
     # Test to ensure we aren't accidentally overriding keys
     @__noClobber__ = (ks...) ->
-      if @::[k]? then throw 'Clobber detected' for k in ks; @a
+      for k in ks
+        if @::[k]? then throw 'Clobber detected'
+      @
 
     #### Extenders
     # **Extenders** allow you to extend the classes prototype with the

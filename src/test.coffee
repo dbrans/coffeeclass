@@ -1,9 +1,13 @@
 # Helper functions
 successCount = 0
-ok = (cond, msg) -> cond and successCount += 1 or (throw msg)
+ok = (cond, msg) -> throw msg unless cond and successCount += 1
 logs = []
 log = -> logs.push msg for msg in arguments
-oklog = -> ok msg is logs.shift() for msg in arguments
+oklog = ->
+  for expected in arguments
+    actual = logs.shift()
+    ok expected is actual
+    console.log 'oklog ', expected, ' actual: ', actual
 
 # Test init
 # Test before and after
@@ -26,6 +30,13 @@ oklog 'A.@after init'
 ok b.foo() is 'result of foo'
 oklog 'B.@before foo', 'A.foo', 'B.@after foo'
 
+# Test introduce
+try
+  class B2 extends A
+    @introduce foo: ->
+catch e
+  log 'Introduce works'
+oklog 'Introduce works'
 
 # Test properties and initialize
 
@@ -104,7 +115,7 @@ ok e.queue.length is 1
 e2 = new E
 ok not e2.queue.length
 
-document.getElementById('console').innerHTML = "#{successCount} tests completed successfully."
+
 
 # DSL for creating and extending classes and mixins
 
@@ -124,7 +135,7 @@ a1.queue.push 'foo'
 # Here, an exception is thrown since 'queue' was introduced in A
 class B extends A
   @introduce
-    queue: ->
+    #queue: ->
     bar: ->
 
 # init method is called immediately after object construction with the arguments
@@ -192,3 +203,7 @@ r.do ->
   @width 15
   @dim.do ->
     @y 15
+
+
+
+document.getElementById('console').innerHTML = "#{successCount} tests completed successfully."
