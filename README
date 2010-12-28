@@ -1,4 +1,5 @@
-# DSL for creating and extending classes and mixins
+# DSL for creating and extending classes and mixins in coffeescript
+
 
 # Create a class
 # Initialize properties on a per-instance basis using functions
@@ -47,10 +48,8 @@ OtherMixin = ->
 
 class MyStack extends Class
   @do StackMixin, OtherMixin #Apply mixins
-  # Do other stuff
 
-# Other nice stuff:
-
+# Other nice stuff: Properties, Delegation, Object.do
 
 # Properties
 class Point extends Class
@@ -75,6 +74,7 @@ class Rect extends Class
     dim: -> new Point
   @delegate x: 'topleft', y: 'topleft'
   @delegate width: 'dim.x', height: 'dim.y'
+
 
 # Object.do
 # Descendents of Class implement 'do', a safe form of 'with'
